@@ -1,0 +1,181 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny catch-all (Phase 4, Pillar 1)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'saic35141@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Validation Helpers
+    function isValidCustomer(data) {
+      return data.customerId is string && data.customerId.size() <= 64 &&
+             data.accountNumber is string && data.accountNumber.size() <= 24 &&
+             data.fullName is string && data.fullName.size() <= 100 &&
+             data.phone is string && data.phone.size() <= 30 &&
+             data.email is string && data.email.size() <= 120 &&
+             data.accountType is string && data.accountType in ['Savings', 'Current', 'Salary'] &&
+             data.status is string && data.status in ['ACTIVE', 'FROZEN', 'INACTIVE', 'DEACTIVATED', 'BLOCKED', 'DELETED'] &&
+             data.balance is number && data.balance >= 0 &&
+             data.availableBalance is number && data.availableBalance >= 0 &&
+             data.createdAt is string && data.createdAt.size() <= 50 &&
+             data.updatedAt is string && data.updatedAt.size() <= 50;
+    }
+
+    function isValidEmployee(data) {
+      return data.employeeId is string && data.employeeId.size() <= 64 &&
+             data.fullName is string && data.fullName.size() <= 100 &&
+             data.phone is string && data.phone.size() <= 30 &&
+             data.email is string && data.email.size() <= 120 &&
+             data.designation is string && data.designation.size() <= 100 &&
+             data.status is string && data.status in ['ACTIVE', 'INACTIVE', 'DEACTIVATED'] &&
+             (!('availability' in data) || data.availability in ['Available', 'Busy', 'Offline', 'Inactive', 'AVAILABLE', 'BUSY', 'OFFLINE', 'INACTIVE']) &&
+             data.assignedCount is number && data.assignedCount >= 0 &&
+             data.completedCount is number && data.completedCount >= 0 &&
+             data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    function isValidEmployeeHead(data) {
+      return data.headId is string && data.headId.size() <= 64 &&
+             data.fullName is string && data.fullName.size() <= 100 &&
+             data.phone is string && data.phone.size() <= 30 &&
+             data.email is string && data.email.size() <= 120 &&
+             data.branch is string && data.branch.size() <= 100 &&
+             data.designation is string && data.designation.size() <= 100 &&
+             data.status is string && data.status in ['ACTIVE', 'INACTIVE'] &&
+             data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    function isValidDoorstepRequest(data) {
+      return data.requestId is string && data.requestId.size() <= 64 &&
+             data.customerId is string && data.customerId.size() <= 64 &&
+             data.accountNumber is string && data.accountNumber.size() <= 30 &&
+             data.requestType is string && data.requestType in ['WITHDRAWAL', 'DEPOSIT'] &&
+             data.amount is number && data.amount > 0 &&
+             data.address is string && data.address.size() <= 300 &&
+             data.status is string && data.status in [
+               'PENDING', 'APPROVED', 'ASSIGNED', 'ACCEPTED',
+               'ON_THE_WAY', 'REACHED_LOCATION', 'CASH_DELIVERED',
+               'CASH_COLLECTED', 'COMPLETED', 'REJECTED'
+             ] &&
+             data.verificationOtp is string && data.verificationOtp.size() <= 10 &&
+             data.createdAt is string && data.createdAt.size() <= 50 &&
+             data.updatedAt is string && data.updatedAt.size() <= 50;
+    }
+
+    function isValidTransaction(data) {
+      return data.transactionId is string && data.transactionId.size() <= 64 &&
+             data.accountNumber is string && data.accountNumber.size() <= 30 &&
+             data.type is string && data.type in ['TRANSFER', 'DOORSTEP_WITHDRAWAL', 'DOORSTEP_DEPOSIT', 'INITIAL_DEPOSIT'] &&
+             data.amount is number && data.amount > 0 &&
+             data.debitOrCredit is string && data.debitOrCredit in ['DEBIT', 'CREDIT'] &&
+             data.status is string && data.status in ['COMPLETED', 'PENDING', 'FAILED'] &&
+             data.description is string && data.description.size() <= 300 &&
+             data.timestamp is string && data.timestamp.size() <= 50 &&
+             data.balanceAfter is number;
+    }
+
+    function isValidAuditLog(data) {
+      return data.action is string && data.action.size() <= 100 &&
+             data.targetId is string && data.targetId.size() <= 100 &&
+             data.targetType is string && data.targetType in ['CUSTOMER', 'EMPLOYEE', 'DOORSTEP_REQUEST', 'SYSTEM', 'SECURITY', 'TRANSACTION'] &&
+             data.timestamp is string && data.timestamp.size() <= 50;
+    }
+
+    function isValidSetting(data) {
+      return data.bankName is string && data.bankName.size() <= 100 &&
+             data.branch is string && data.branch.size() <= 100 &&
+             data.ifscPrefix is string && data.ifscPrefix.size() <= 20 &&
+             data.dailyWithdrawalLimit is number &&
+             data.dailyTransferLimit is number;
+    }
+
+    // Test connection endpoint
+    match /test/{testId} {
+      allow read: if true;
+    }
+
+    // Admin documents
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Customers collection
+    match /customers/{customerId} {
+      allow read: if true;
+      allow create: if isValidId(customerId) && isValidCustomer(incoming());
+      allow update: if isValidId(customerId) && isValidCustomer(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Employee Heads collection
+    match /employeeHeads/{headId} {
+      allow read: if true;
+      allow create: if isValidId(headId) && isValidEmployeeHead(incoming());
+      allow update: if isValidId(headId) && isValidEmployeeHead(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Employees collection
+    match /employees/{employeeId} {
+      allow read: if true;
+      allow create: if isValidId(employeeId) && isValidEmployee(incoming());
+      allow update: if isValidId(employeeId) && isValidEmployee(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Doorstep requests collection
+    match /doorstepRequests/{requestId} {
+      allow read: if true;
+      allow create: if isValidId(requestId) && isValidDoorstepRequest(incoming());
+      allow update: if isValidId(requestId) && isValidDoorstepRequest(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Ledger transactions: Immutable once created
+    match /transactions/{transactionId} {
+      allow read: if true;
+      allow create: if isValidId(transactionId) && isValidTransaction(incoming());
+      allow update, delete: if false; // Strict immutability
+    }
+
+    // Audit logs: Append-only
+    match /auditLogs/{logId} {
+      allow read: if true;
+      allow create: if isValidId(logId) && isValidAuditLog(incoming());
+      allow update, delete: if false; // Strict immutability
+    }
+
+    // System Settings
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update: if isValidId(settingId) && isValidSetting(incoming());
+      allow delete: if isAdmin();
+    }
+  }
+}

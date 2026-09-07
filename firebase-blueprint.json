@@ -1,0 +1,207 @@
+{
+  "entities": {
+    "Customer": {
+      "title": "Customer",
+      "description": "Retail bank customer account profile, balances, and status",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "uid": { "type": "string", "maxLength": 128 },
+        "customerId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 64 },
+        "accountNumber": { "type": "string", "pattern": "^[0-9]{9,18}$", "maxLength": 24 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "dob": { "type": "string", "maxLength": 30 },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"], "maxLength": 20 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "email": { "type": "string", "format": "email", "maxLength": 120 },
+        "address": { "type": "string", "maxLength": 300 },
+        "branch": { "type": "string", "maxLength": 100 },
+        "ifsc": { "type": "string", "maxLength": 20 },
+        "accountType": { "type": "string", "enum": ["Savings", "Current", "Salary"], "maxLength": 30 },
+        "status": { "type": "string", "enum": ["ACTIVE", "FROZEN", "DEACTIVATED", "BLOCKED", "DELETED"], "maxLength": 30 },
+        "balance": { "type": "number" },
+        "availableBalance": { "type": "number" },
+        "kycStatus": { "type": "string", "enum": ["VERIFIED", "PENDING", "REJECTED"], "maxLength": 30 },
+        "kycDocType": { "type": "string", "maxLength": 50 },
+        "kycDocNumber": { "type": "string", "maxLength": 50 },
+        "city": { "type": "string", "maxLength": 100 },
+        "state": { "type": "string", "maxLength": 100 },
+        "pincode": { "type": "string", "maxLength": 20 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["customerId", "accountNumber", "fullName", "phone", "email", "accountType", "status", "balance", "availableBalance", "createdAt", "updatedAt"]
+    },
+    "Employee": {
+      "title": "Employee",
+      "description": "Field banking officer profile and assignment stats",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "uid": { "type": "string", "maxLength": 128 },
+        "employeeId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 64 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "email": { "type": "string", "format": "email", "maxLength": 120 },
+        "address": { "type": "string", "maxLength": 300 },
+        "city": { "type": "string", "maxLength": 100 },
+        "state": { "type": "string", "maxLength": 100 },
+        "pincode": { "type": "string", "maxLength": 20 },
+        "branch": { "type": "string", "maxLength": 100 },
+        "designation": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "maxLength": 100 },
+        "employeeHead": { "type": "string", "maxLength": 100 },
+        "employeeHeadId": { "type": "string", "maxLength": 64 },
+        "employeeHeadName": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE", "DEACTIVATED"], "maxLength": 20 },
+        "availability": { "type": "string", "maxLength": 20 },
+        "assignedCount": { "type": "number" },
+        "completedCount": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["employeeId", "fullName", "phone", "email", "designation", "status", "availability", "assignedCount", "completedCount", "createdAt"]
+    },
+    "EmployeeHead": {
+      "title": "EmployeeHead",
+      "description": "Branch employee head supervising branch field banking officers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "headId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 64 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "email": { "type": "string", "format": "email", "maxLength": 120 },
+        "branch": { "type": "string", "maxLength": 100 },
+        "designation": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"], "maxLength": 20 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["headId", "fullName", "phone", "email", "branch", "designation", "status", "createdAt"]
+    },
+    "DoorstepRequest": {
+      "title": "DoorstepRequest",
+      "description": "Cash delivery or pickup doorstep order lifecycle",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "requestId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 64 },
+        "customerId": { "type": "string", "maxLength": 64 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "accountNumber": { "type": "string", "maxLength": 30 },
+        "requestType": { "type": "string", "enum": ["WITHDRAWAL", "DEPOSIT"], "maxLength": 20 },
+        "amount": { "type": "number" },
+        "address": { "type": "string", "maxLength": 300 },
+        "branch": { "type": "string", "maxLength": 100 },
+        "preferredTime": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "denominations": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "ASSIGNED", "ACCEPTED", "ON_THE_WAY", "REACHED_LOCATION", "CASH_DELIVERED", "CASH_COLLECTED", "COMPLETED", "REJECTED"], "maxLength": 30 },
+        "employeeHeadId": { "type": "string", "maxLength": 64 },
+        "employeeHeadName": { "type": "string", "maxLength": 100 },
+        "assignedEmployeeId": { "type": "string", "maxLength": 64 },
+        "assignedEmployeeName": { "type": "string", "maxLength": 100 },
+        "assignedEmployeePhone": { "type": "string", "maxLength": 30 },
+        "assignedAt": { "type": "string", "maxLength": 50 },
+        "assignedBy": { "type": "string", "maxLength": 100 },
+        "startedAt": { "type": "string", "maxLength": 50 },
+        "arrivedAt": { "type": "string", "maxLength": 50 },
+        "otpVerifiedAt": { "type": "string", "maxLength": 50 },
+        "transactionId": { "type": "string", "maxLength": 64 },
+        "reassignedBy": { "type": "string", "maxLength": 100 },
+        "reassignmentReason": { "type": "string", "maxLength": 300 },
+        "verificationOtp": { "type": "string", "pattern": "^[0-9]{4,6}$", "maxLength": 10 },
+        "rejectReason": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 },
+        "completedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["requestId", "customerId", "accountNumber", "requestType", "amount", "address", "status", "verificationOtp", "createdAt", "updatedAt"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Immutable ledger record of banking fund movements",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "transactionId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 64 },
+        "customerId": { "type": "string", "maxLength": 64 },
+        "accountNumber": { "type": "string", "maxLength": 30 },
+        "type": { "type": "string", "enum": ["TRANSFER", "DOORSTEP_WITHDRAWAL", "DOORSTEP_DEPOSIT", "INITIAL_DEPOSIT"], "maxLength": 30 },
+        "amount": { "type": "number" },
+        "debitOrCredit": { "type": "string", "enum": ["DEBIT", "CREDIT"], "maxLength": 10 },
+        "status": { "type": "string", "enum": ["COMPLETED", "PENDING", "FAILED"], "maxLength": 20 },
+        "description": { "type": "string", "maxLength": 300 },
+        "sender": { "type": "string", "maxLength": 150 },
+        "receiver": { "type": "string", "maxLength": 150 },
+        "requestId": { "type": "string", "maxLength": 64 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "balanceAfter": { "type": "number" }
+      },
+      "required": ["transactionId", "accountNumber", "type", "amount", "debitOrCredit", "status", "description", "timestamp", "balanceAfter"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable compliance and security event trail",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "adminId": { "type": "string", "maxLength": 64 },
+        "action": { "type": "string", "maxLength": 100 },
+        "targetId": { "type": "string", "maxLength": 100 },
+        "targetType": { "type": "string", "enum": ["CUSTOMER", "EMPLOYEE", "DOORSTEP_REQUEST", "SYSTEM", "SECURITY"], "maxLength": 50 },
+        "details": { "type": "string", "maxLength": 2000 },
+        "timestamp": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["action", "targetId", "targetType", "timestamp"]
+    },
+    "SystemSetting": {
+      "title": "SystemSetting",
+      "description": "Global regulatory thresholds and bank configurations",
+      "type": "object",
+      "properties": {
+        "bankName": { "type": "string", "maxLength": 100 },
+        "branch": { "type": "string", "maxLength": 100 },
+        "ifscPrefix": { "type": "string", "maxLength": 20 },
+        "dailyWithdrawalLimit": { "type": "number" },
+        "dailyTransferLimit": { "type": "number" },
+        "maxDoorstepWithdrawal": { "type": "number" },
+        "maxDoorstepDeposit": { "type": "number" },
+        "largeTransactionThreshold": { "type": "number" }
+      },
+      "required": ["bankName", "branch", "ifscPrefix", "dailyWithdrawalLimit", "dailyTransferLimit"]
+    }
+  },
+  "firestore": {
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Bank customer accounts, balances, and credentials"
+    },
+    "/employeeHeads/{headId}": {
+      "schema": "EmployeeHead",
+      "description": "Branch employee heads supervising field banking officers"
+    },
+    "/employees/{employeeId}": {
+      "schema": "Employee",
+      "description": "Field banking officers and status"
+    },
+    "/doorstepRequests/{requestId}": {
+      "schema": "DoorstepRequest",
+      "description": "Doorstep cash withdrawal and deposit services"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Historical financial transactions ledger"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Immutable administrative and security audit trail"
+    },
+    "/settings/{settingId}": {
+      "schema": "SystemSetting",
+      "description": "Bank settings and operational parameters"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "ApexCore Banking",
+  "description": "Full-scale elegant dark bank management system with Admin, Employee, and Customer portals, doorstep cash delivery and collection, fund transfers, KYC verification, and audit tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

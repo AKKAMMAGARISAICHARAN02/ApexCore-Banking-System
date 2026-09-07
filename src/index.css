@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   ApexCore Banking - Elegant Dark Design System
+   ========================================================================== */
+
+:root {
+  --bg-app: #0F1115;
+  --bg-surface: #111827;
+  --bg-surface-elevated: #151C2C;
+  --bg-footer: #0a0c10;
+
+  --border-subtle: #1F2937;
+  --border-muted: #374151;
+  --border-focus: #3B82F6;
+
+  --text-primary: #E5E7EB;
+  --text-heading: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+
+  --accent-blue: #3B82F6;
+  --accent-blue-deep: #1D4ED8;
+  --accent-blue-surface: rgba(30, 58, 138, 0.3);
+
+  --accent-green: #34D399;
+  --accent-green-surface: rgba(6, 78, 59, 0.3);
+
+  --accent-amber: #FBBF24;
+  --accent-amber-surface: rgba(120, 53, 15, 0.3);
+
+  --accent-red: #F87171;
+  --accent-red-surface: rgba(127, 29, 29, 0.3);
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0F1115;
+}
+::-webkit-scrollbar-thumb {
+  background: #1F2937;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Base Card & Container Presets matching Elegant Dark */
+.dark-card {
+  background-color: #111827;
+  border: 1px solid #1F2937;
+  border-radius: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark-card:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.dark-card-header {
+  background-color: #151C2C;
+  border-bottom: 1px solid #1F2937;
+  padding: 1rem 1.5rem;
+}
+
+.dark-input {
+  background-color: #0F1115;
+  border: 1px solid #1F2937;
+  color: #E5E7EB;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dark-input:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.dark-input::placeholder {
+  color: #4B5563;
+}
